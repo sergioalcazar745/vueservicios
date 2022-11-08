@@ -1,16 +1,17 @@
 <template>
-    <div>
-        <h1>Coches</h1>
+    <div class="container">
+        <h1 class="my-5">Coches</h1>
         <table class="table table-dark">
-            <tbody v-if="status" v-html="getCoches"></tbody>
-            <div v-else>Loading</div>
+            <tbody v-html="getCoches"></tbody>
+            <!-- <div>Loading</div> -->
         </table>
     </div>
 </template>
 
 <script>
-import Global from './../Global';
-import axios from "axios";
+import ServiceCoches from './../services/ServiceCoches'
+const services = new ServiceCoches();
+
 export default {
     name: 'CochesComponent',
 
@@ -31,7 +32,7 @@ export default {
                         <td>${coche.marca}</td>
                         <td>${coche.modelo}</td>
                         <td>${coche.conductor}</td>
-                        <td><img src='${coche.imagen}' width="150"/></td>
+                        <td><img src='${coche.imagen}'width="150"/></td>
                     </tr>
                     `
             }
@@ -45,10 +46,9 @@ export default {
 
     methods: {
         loadCoches(){
-            var request = Global.url + "/webresources/coches";
-            axios.get(request).then(response => {
-                this.coches = response.data;
-                this.status = true;
+            services.getCoches().then(response => {
+                this.coches = response;
+                // this.status = true
             })
         }
     }

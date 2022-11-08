@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h1 class="my-5">Detalle del empleado {{this.$route.params.id}}</h1>
+        <h1 class="my-5" v-if="id > 0">Detalle del empleado {{this.id}}</h1>
         <form v-if="empleado != null">
             <label class="form-label">Apellido</label>
             <input type="text" class="form-control" :value="empleado.apellido"/>
@@ -11,13 +11,14 @@
             <label class="form-label">Departamento</label>
             <input type="text" class="form-control" :value="empleado.departamento"/>
         </form>
-        <button @click="redirectHome" class="btn btn-danger mt-3">Volver</button>
+        <!-- <button @click="redirectHome" class="btn btn-danger mt-3">Volver</button> -->
     </div>
 </template>
 
 <script>
-import Global from '@/Global';
-import axios from 'axios';
+import ServiceEmpleados from './../services/ServiceEmpleados'
+const service = new ServiceEmpleados();
+
 export default {
     name: 'EmpleadosDetalle',
 
@@ -27,8 +28,20 @@ export default {
         };
     },
 
+    props:['id'],
+
     mounted() {
-      this.loadEmpleado();  
+        if(this.id > 0){
+            this.loadEmpleado();  
+        }
+    },
+
+    watch: {
+        id(newVal, oldVal){
+            if(newVal != oldVal){
+                this.loadEmpleado()
+            }
+        }
     },
 
     methods: {
@@ -37,10 +50,9 @@ export default {
         },
 
         loadEmpleado(){
-            var request = Global.url + "api/empleados/" + this.$route.params.id;
-
-            axios.get(request).then(response => {
-                this.empleado = response.data
+            service.findByOne(this.id).then(response => {
+                console.log(response);
+                this.empleado = response;                
             })
         }
     }

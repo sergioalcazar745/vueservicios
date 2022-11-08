@@ -15,21 +15,30 @@
                     <td>{{empleado.oficio}}</td>
                     <td>{{empleado.salario}}</td>
                     <td>{{empleado.departamento}}</td>
-                    <td><router-link :to="'/detalles/' + empleado.idEmpleado " class="btn btn-success">Detalle</router-link></td>
+                    <!-- <td><router-link :to="'/detalles/' + empleado.idEmpleado " class="btn btn-success">Detalle</router-link></td> -->
+                    <td><button @click="this.id = empleado.idEmpleado" class="btn btn-success">Detalle</button></td>
                 </tr>
             </tbody>
         </table>
+        <EmpleadosDetalle :id="this.id"/>
     </div>
 </template>
 
 <script>
 import axios from 'axios';
 import Global from './../Global';
+import EmpleadosDetalle from './EmpleadosDetalle.vue'
 export default {
     name: 'EmpleadosOficio',
+
+    components: {
+        EmpleadosDetalle
+    },
+
     data() {
         return {
-            empleados: []
+            empleados: [],
+            id: 0
         };
     },
 
@@ -46,13 +55,15 @@ export default {
     },
 
     methods: {
+
         loadEmpleados(){
+            this.id = 0;
             var request = Global.url + "api/Empleados/EmpleadosOficio/" + this.$route.params.nombre;
 
             axios.get(request).then(response => {
                 this.empleados = response.data
             })
-        }
+        },
     }
 };
 </script>
